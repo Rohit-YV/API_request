@@ -14,12 +14,16 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-app.post("/", async (req, res) => {
+ app.post("/", async (req, res) => {
+//   var crypto = req.body.crypto;
+//   var fiat = req.body.fiat;
+//   var baseURL =https://api.coindesk.com/v1/bpi/currentprice/
   try {
     const response = await fetch("https://api.coindesk.com/v1/bpi/currentprice/BTC.json");
     const data = await response.json();
-    console.log(data);
-    res.send(data);
+    const price = data.bpi.USD.rate; 
+    console.log(price);
+    res.send("<h1>The Current Price of Bitcoin is:"+" "+price +"</h1>");
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred");

@@ -14,22 +14,32 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
- app.post("/", async (req, res) => {
-//   var crypto = req.body.crypto;
-//   var fiat = req.body.fiat;
-//   var baseURL =https://api.coindesk.com/v1/bpi/currentprice/
-  try {
-    const response = await fetch("https://api.coindesk.com/v1/bpi/currentprice/BTC.json");
-    const data = await response.json();
-    const price = data.bpi.USD.rate; 
-    console.log(price);
-    res.send("<h1>The Current Price of Bitcoin is:"+" "+price +"</h1>");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("An error occurred");
-  }
+app.post("/", async (req, res) => {
+    const crypto = req.body.crypto;
+    const fiat = req.body.fiat;
+    const baseURL = "https://api.coinbase.com/v2/exchange-rates?currency=";
+
+    try {
+        const response = await fetch(baseURL + crypto);
+        if (!response.ok) {
+            throw new Error('Failed to fetch data');
+        }
+        const data = await response.json();
+        const rate = data.data.rates[fiat];
+        
+        if (!rate) {
+            throw new Error('Exchange rate not available for specified fiat currency');
+        }
+        const message = `<h1>The Current Price of ${crypto.toUpperCase()} in ${fiat.toUpperCase()} is: ${rate}</h1>`;
+        console.log(message);
+        res.send();
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("An error occurred");
+    }
 });
 
-app.listen(55509, () => {
-  console.log("Server is listening on port 55509");
+const PORT = 55509;
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });

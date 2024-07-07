@@ -1,5 +1,5 @@
 import express from 'express';
-import bodyparser from 'body-parser';
+import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import fetch from 'node-fetch';
@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
 
-app.use(bodyparser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 
 app.post("/", async (req, res) => {
   try {
-    const response = await fetch("https://apiv2.bitcoinaverage.com/indices/global/ticker/BTCUSD");
+    const response = await fetch("https://api.coindesk.com/v1/bpi/currentprice/BTC.json");
     const data = await response.json();
     console.log(data);
     res.send(data);
@@ -26,6 +26,6 @@ app.post("/", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("Server is listening on port 3000");
+app.listen(55509, () => {
+  console.log("Server is listening on port 55509");
 });
